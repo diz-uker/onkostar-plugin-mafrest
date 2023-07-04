@@ -24,7 +24,12 @@
 
 let onResponse = (resp) => {
     if (resp.status && resp.status.code !== 1) {
-        console.warn(resp, 'Error requesting simple variants!');
+        Ext.Msg.alert('Achtung', 'Fehler beim Abrufen der einfachen Varianten. Update abgebrochen.');
+        return;
+    }
+
+    if (resp.result.length === 0) {
+        Ext.Msg.alert('Achtung', 'Keine einfachen Varianten gefunden. Update abgebrochen.');
         return;
     }
 
