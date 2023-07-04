@@ -8,3 +8,5 @@ Dies umfasst auch die Merkmalskatalogversion, die beim Setzen von Werten von Mer
 # Beispielscript
 
 Das Script in [examples/script.js](examples/script.js) zeigt die Nutzung des Plugins nach Drücken eines Buttons.
+
+Zusätzlich wird die erweiterte Dokumentation erzwungen und die Analyse-Methode "Sequenzierung" aktiviert, was zur Erfassung von einfachen Varianten erforderlich ist.

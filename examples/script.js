@@ -44,6 +44,14 @@ let onResponse = (resp) => {
         return result;
     });
 
+    // Erweiterte Dokumentation
+    setFieldValue('Dokumentation', 'ERW');
+
+    // Aktiviere "Sequenzierung"
+    let methoden = new Set(getFieldValue('AnalyseMethoden').split(',').map(m => m.trim()));
+    methoden.add('S');
+    setFieldValue('AnalyseMethoden', Array.from(methoden).join(', '));
+
     setFieldValue('MolekulargenetischeUntersuchung', simpleVariants);
 };
 
