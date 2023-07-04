@@ -22,6 +22,16 @@
  * SOFTWARE.
  */
 
+let requestSimpleVariants = () => {
+    executePluginMethod(
+        'MafRepoProcedureAnalyzer',
+        'requestSimpleVariants',
+        {sampleId: encodeURIComponent(getFieldValue('Einsendenummer'))},
+        onResponse,
+        false
+    );
+}
+
 let onResponse = (resp) => {
     if (resp.status && resp.status.code !== 1) {
         Ext.Msg.alert('Achtung', 'Fehler beim Abrufen der einfachen Varianten. Update abgebrochen.');
@@ -57,10 +67,15 @@ let onResponse = (resp) => {
     methoden.add('S');
     setFieldValue('AnalyseMethoden', Array.from(methoden).join(', '));
 
-    setFieldValue('MolekulargenetischeUntersuchung', simpleVariants);
+    // Setze alle Varianten - neue einfache Varianten und bestehende andere Varianten
+    setFieldValue('MolekulargenetischeUntersuchung', simpleVariants.concat(existingOtherVariants));
 };
 
-if (getFieldValue('MolekulargenetischeUntersuchung').length > 0) {
+let existingVariants = Array.from(getFieldValue('MolekulargenetischeUntersuchung'));
+let existingSimpleVariants = Array.from(existingVariants.filter((form) => {return form.Ergebnis.val === 'P';}));
+let existingOtherVariants = Array.from(existingVariants.filter((form) => {return form.Ergebnis.val !== 'P';}));
+
+if (existingSimpleVariants.length > 0) {
     Ext.Msg.show({
         title:'Bestehende einfache Varianten überschreiben?',
         msg: 'Es gibt bereits einfache Varianten in diesem Formular. Sollen diese überschrieben werden?',
@@ -68,14 +83,10 @@ if (getFieldValue('MolekulargenetischeUntersuchung').length > 0) {
         icon: Ext.Msg.QUESTION,
         fn: (btn) => {
             if (btn === 'yes') {
-                executePluginMethod(
-                    'MafRepoProcedureAnalyzer',
-                    'requestSimpleVariants',
-                    {sampleId: encodeURIComponent(getFieldValue('Einsendenummer'))},
-                    onResponse,
-                    false
-                );
+                requestSimpleVariants();
             }
         }
     });
+} else {
+    requestSimpleVariants();
 }
