@@ -55,10 +55,22 @@ let onResponse = (resp) => {
     setFieldValue('MolekulargenetischeUntersuchung', simpleVariants);
 };
 
-executePluginMethod(
-    'MafRepoProcedureAnalyzer',
-    'requestSimpleVariants',
-    {sampleId: encodeURIComponent(getFieldValue('Einsendenummer'))},
-    onResponse,
-    false
-);
+if (getFieldValue('MolekulargenetischeUntersuchung').length > 0) {
+    Ext.Msg.show({
+        title:'Bestehende einfache Varianten überschreiben?',
+        msg: 'Es gibt bereits einfache Varianten in diesem Formular. Sollen diese überschrieben werden?',
+        buttons: Ext.Msg.YESNO,
+        icon: Ext.Msg.QUESTION,
+        fn: (btn) => {
+            if (btn === 'yes') {
+                executePluginMethod(
+                    'MafRepoProcedureAnalyzer',
+                    'requestSimpleVariants',
+                    {sampleId: encodeURIComponent(getFieldValue('Einsendenummer'))},
+                    onResponse,
+                    false
+                );
+            }
+        }
+    });
+}
