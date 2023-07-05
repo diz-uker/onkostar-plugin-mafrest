@@ -55,9 +55,12 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
 
     private JdbcTemplate jdbcTemplate;
 
+    private RestTemplate restTemplate;
+
     public MafRepoProcedureAnalyzer(IOnkostarApi onkostarApi, DataSource dataSource) {
         this.onkostarApi = onkostarApi;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.restTemplate = new RestTemplate();
     }
 
     @Override
@@ -111,13 +114,18 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
             throw new RuntimeException("No SampleID given!");
         }
 
-        var restTemplate = new RestTemplate();
-        var uri = UriComponentsBuilder.fromUriString("http://10.5.0.15:8000")
+        var mafrepoUrl = this.onkostarApi.getGlobalSetting("mafrepo_url");
+
+        if (null == mafrepoUrl) {
+            throw new RuntimeException("Einstellung 'marfrepo_url' nicht vorhanden");
+        }
+
+        var uri = UriComponentsBuilder.fromUriString(mafrepoUrl)
                 .path("/samples/{sampleId}/simplevariants")
                 .buildAndExpand(sampleId)
                 .toUri();
 
-        ResponseEntity<SimpleVariantResponse[]> responseEntity = restTemplate.getForEntity(uri, SimpleVariantResponse[].class);
+        ResponseEntity<SimpleVariantResponse[]> responseEntity = this.restTemplate.getForEntity(uri, SimpleVariantResponse[].class);
 
         SimpleVariantResponse[] response = responseEntity.getBody();
 
