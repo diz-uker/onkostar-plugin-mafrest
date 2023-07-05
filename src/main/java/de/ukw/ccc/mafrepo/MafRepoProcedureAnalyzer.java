@@ -137,6 +137,7 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
             mappedItem.put("Untersucht", Map.of("val", orEmpty(item.hugoSymbol), "version", findVersion("OS.Molekulargenetik")));
             mappedItem.put("cDNANomenklatur", orEmpty(item.hgvsc));
             mappedItem.put("ProteinebeneNomenklatur", orEmpty(item.hgvsp));
+            mappedItem.put("ExonInt", orEmpty(item.exon));
 
             mappedItem.put("EVENSEMBLID", orEmpty(item.gene));
             mappedItem.put("EVHGNCID", orEmpty(item.hgncId));
@@ -147,8 +148,11 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
             mappedItem.put("EVAltNucleotide", orEmpty(item.tumorSeqAllele2));
             mappedItem.put("EVRefNucleotide", orEmpty(item.referenceAllele));
             mappedItem.put("EVNMNummer", orEmpty(item.nmNumber));
+            mappedItem.put("Coverage", orEmpty(item.tdepth.toString()));
             mappedItem.put("Allelfrequenz", orEmpty(String.format(Locale.GERMAN,"%.3f", item.allelicFrequency * 100.)));
             mappedItem.put("EVdbSNPID", orEmpty(item.dbSnpRs));
+
+            mappedItem.put("ExonText", orEmpty(item.exon));
             return mappedItem;
         }).collect(Collectors.toList());
     }
@@ -185,7 +189,8 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
         public String tumorSeqAllele2;
         public String hgvsc;
         public String hgvsp;
-        public Long tDepth;
+        public String exon;
+        public Long tdepth;
         public String dbSnpRs;
         public String panel;
         public Double allelicFrequency;
