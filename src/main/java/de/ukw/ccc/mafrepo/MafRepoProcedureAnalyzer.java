@@ -114,6 +114,8 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
             throw new RuntimeException("No SampleID given!");
         }
 
+        var panel = input.get("panel");
+
         var mafrepoUrl = this.onkostarApi.getGlobalSetting("mafrepo_url");
 
         if (null == mafrepoUrl) {
@@ -122,6 +124,7 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
 
         var uri = UriComponentsBuilder.fromUriString(mafrepoUrl)
                 .path("/samples/{sampleId}/simplevariants")
+                .queryParam("panel", panel)
                 .buildAndExpand(sampleId)
                 .toUri();
 

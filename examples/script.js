@@ -26,7 +26,10 @@ let requestSimpleVariants = () => {
     executePluginMethod(
         'MafRepoProcedureAnalyzer',
         'requestSimpleVariants',
-        {sampleId: encodeURIComponent(getFieldValue('Einsendenummer'))},
+        {
+            sampleId: encodeURIComponent(getFieldValue('Einsendenummer')),
+            panel: getFieldValue('Panel')
+        },
         onResponse,
         false
     );
