@@ -18,5 +18,5 @@ Zum Betrieb dieses Plugins ist die Angabe der URL der MAF-Repo-Anwendung erforde
 Dies lässt sich initial durch folgende Datenbankanfrage anlegen, später dann in den allgemeinen Einstellungen von Onkostar auch ändern.
 
 ```
-INSERT INTO einstellung (name, wert, kategorie, beschreibung) VALUES('mafrepo_url', 'http://localhost:8000', 'System', 'MAF-Repo - URL');
+INSERT INTO einstellung (name, wert, kategorie, beschreibung) VALUES('mafrest_url', 'http://localhost:8000', 'System', 'MAF-REST - URL');
 ```

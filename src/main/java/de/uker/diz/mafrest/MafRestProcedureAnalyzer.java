@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package de.ukw.ccc.mafrepo;
+package de.uker.diz.mafrest;
 
 import de.itc.onkostar.api.Disease;
 import de.itc.onkostar.api.IOnkostarApi;
@@ -43,7 +43,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
+public class MafRestProcedureAnalyzer implements IProcedureAnalyzer {
 
     /**
      * Logger for this class.
@@ -57,7 +57,7 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
 
     private RestTemplate restTemplate;
 
-    public MafRepoProcedureAnalyzer(IOnkostarApi onkostarApi, DataSource dataSource) {
+    public MafRestProcedureAnalyzer(IOnkostarApi onkostarApi, DataSource dataSource) {
         this.onkostarApi = onkostarApi;
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.restTemplate = new RestTemplate();
@@ -70,17 +70,17 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
 
     @Override
     public String getVersion() {
-        return "0.1.0";
+        return "0.3.0";
     }
 
     @Override
     public String getName() {
-        return "Backend Service für das MAF-Repo";
+        return "MAF-REST";
     }
 
     @Override
     public String getDescription() {
-        return "Backend Service für das MAF-Repo";
+        return "Backend Service, um genetische Daten via REST-Schnittstelle zu holen";
     }
 
     @Override
@@ -115,17 +115,19 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
         }
 
         var panel = input.get("panel");
+        
+        var patID = input.get("patID");
 
-        var mafrepoUrl = this.onkostarApi.getGlobalSetting("mafrepo_url");
+        var mafrestUrl = this.onkostarApi.getGlobalSetting("mafrest_url");
 
-        if (null == mafrepoUrl) {
-            throw new RuntimeException("Einstellung 'marfrepo_url' nicht vorhanden");
+        if (null == mafrestUrl) {
+            throw new RuntimeException("Einstellung 'marfrest_url' nicht vorhanden");
         }
 
-        var uri = UriComponentsBuilder.fromUriString(mafrepoUrl)
-                .path("/samples/{sampleId}/simplevariants")
+        var uri = UriComponentsBuilder.fromUriString(mafrestUrl)
+                .path("/samples/{PatId}/{sampleId}/simplevariants")
                 .queryParam("panel", panel)
-                .buildAndExpand(sampleId)
+                .buildAndExpand(patID, sampleId)
                 .toUri();
 
         ResponseEntity<SimpleVariantResponse[]> responseEntity = this.restTemplate.getForEntity(uri, SimpleVariantResponse[].class);
@@ -164,7 +166,6 @@ public class MafRepoProcedureAnalyzer implements IProcedureAnalyzer {
         var sql = "SELECT pcv.id FROM property_catalogue_version pcv "
                 + "JOIN property_catalogue pc ON pc.id = pcv.datacatalog_id "
                 + "WHERE name = ?";
-
         try {
             var r = jdbcTemplate.queryForObject(sql, new Object[]{name}, Long.class);
             if (null != r) {

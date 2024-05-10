@@ -1,7 +1,9 @@
 /*
  * MIT License
  *
+ * Copyright (c) 2024 MIK UK Erlangen
  * Copyright (c) 2023 Comprehensive Cancer Center Mainfranken
+ * 
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +26,11 @@
 
 let requestSimpleVariants = () => {
     executePluginMethod(
-        'MafRepoProcedureAnalyzer',
+        'MafRestProcedureAnalyzer',
         'requestSimpleVariants',
         {
             sampleId: encodeURIComponent(getFieldValue('Einsendenummer')),
+            patID: getPatient().patientenId,
             panel: getFieldValue('Panel')
         },
         onResponse,
@@ -66,9 +69,10 @@ let onResponse = (resp) => {
     setFieldValue('Dokumentation', 'ERW');
 
     // Aktiviere "Sequenzierung"
-    let methoden = new Set(getFieldValue('AnalyseMethoden').split(',').map(m => m.trim()));
+    let analysemethoden = getFieldValue('AnalyseMethoden')
+    let methoden = new Set(analysemethoden.split(',').map(m => m.trim()));
     methoden.add('S');
-    setFieldValue('AnalyseMethoden', Array.from(methoden).join(', '));
+    setFieldValue('AnalyseMethoden', Array.from(methoden));
 
     // Setze alle Varianten - neue einfache Varianten und bestehende andere Varianten
     setFieldValue('MolekulargenetischeUntersuchung', simpleVariants.concat(existingOtherVariants));
