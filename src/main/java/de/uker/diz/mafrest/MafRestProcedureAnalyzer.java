@@ -70,7 +70,7 @@ public class MafRestProcedureAnalyzer implements IProcedureAnalyzer {
 
     @Override
     public String getVersion() {
-        return "0.3.0";
+        return "0.3.1";
     }
 
     @Override
@@ -127,7 +127,8 @@ public class MafRestProcedureAnalyzer implements IProcedureAnalyzer {
         var uri = UriComponentsBuilder.fromUriString(mafrestUrl)
                 .path("/samples/{PatId}/{sampleId}/simplevariants")
                 .queryParam("panel", panel)
-                .buildAndExpand(patID, sampleId)
+                .queryParam("patID", patID)
+                .buildAndExpand(sampleId)
                 .toUri();
 
         ResponseEntity<SimpleVariantResponse[]> responseEntity = this.restTemplate.getForEntity(uri, SimpleVariantResponse[].class);
