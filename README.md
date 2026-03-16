@@ -1,4 +1,4 @@
-# Onkostar Plugin "onkostar-plugin-mafrepo"
+# Onkostar Plugin "onkostar-plugin-mafrest"
 
 Plugin zum Abrufen von Informationen aus der Anwendung "maf-repo" und zur Übernahme in das Onkostar-Formular "OS.Molekulargenetik"
 
@@ -13,7 +13,7 @@ Zusätzlich wird die erweiterte Dokumentation erzwungen und die Analyse-Methode 
 
 # Einstellungen
 
-Zum Betrieb dieses Plugins ist die Angabe der URL der MAF-Repo-Anwendung erforderlich.
+Zum Betrieb dieses Plugins ist die Angabe der URL der REST-Schnittstelle erforderlich.
 
 Dies lässt sich initial durch folgende Datenbankanfrage anlegen, später dann in den allgemeinen Einstellungen von Onkostar auch ändern.
 
